@@ -3,6 +3,8 @@ if (!customElements.get('curtain-configurator')) {
     'curtain-configurator',
     class CurtainConfigurator extends HTMLElement {
       connectedCallback() {
+        if (this.initialized) return;
+        this.initialized = true;
         this.form = this.querySelector('[data-curtain-form]');
         this.widthInput = this.querySelector('[data-curtain-width]');
         this.dropSelect = this.querySelector('[data-curtain-drop]');
@@ -17,8 +19,8 @@ if (!customElements.get('curtain-configurator')) {
         this.tiers = this.readJson('[data-curtain-tiers]', []);
         this.product = this.readJson('[data-curtain-product]', { optionNames: [], variants: [] });
         this.currency = this.dataset.currency || 'USD';
-        this.minWidth = Number(this.dataset.minWidth || 50);
-        this.maxWidth = Number(this.dataset.maxWidth || 360);
+        this.minWidth = Math.min(...this.tiers.map((tier) => Number(tier.minWidth)));
+        this.maxWidth = Math.max(...this.tiers.map((tier) => Number(tier.maxWidth)));
         this.pricingStrategy = this.dataset.pricingStrategy || 'priced_variants';
         this.enforcePriceMatch = this.dataset.enforcePriceMatch === 'true';
         this.optionIndexes = this.getOptionIndexes();
@@ -115,6 +117,8 @@ if (!customElements.get('curtain-configurator')) {
       }
 
       validate(state) {
+        if (this.pricingStrategy !== 'priced_variants') return 'Purchasing is unavailable until pricing is configured.';
+        if (!Array.isArray(this.tiers) || !this.tiers.length) return 'Pricing is currently unavailable. Please contact us.';
         if (!state.rawWidth) return 'Enter your curtain width to calculate the price.';
         if (!Number.isInteger(state.width)) return 'Width must be a whole number in centimetres.';
         if (state.width < this.minWidth || state.width > this.maxWidth) {
@@ -151,7 +155,7 @@ if (!customElements.get('curtain-configurator')) {
         this.setError(error && state.rawWidth ? error : '');
         if (!this.submitButton) return;
 
-        this.submitButton.disabled = Boolean(error);
+        this.submitButton.disabled = Boolean(error) || Boolean(this.isLoading);
         if (!state.rawWidth) {
           this.submitLabel.textContent = 'Enter measurements';
         } else if (error) {
@@ -172,11 +176,12 @@ if (!customElements.get('curtain-configurator')) {
         if (!this.errorOutput) return;
         this.errorOutput.textContent = message;
         this.errorOutput.hidden = !message;
-        this.widthInput?.toggleAttribute('aria-invalid', Boolean(message && /width|whole number/i.test(message)));
+        this.widthInput?.setAttribute('aria-invalid', String(Boolean(message && /width|whole number/i.test(message))));
       }
 
       async handleSubmit(event) {
         event.preventDefault();
+        if (this.isLoading) return;
         const state = this.getState();
         const error = this.validate(state);
         if (error) {
@@ -231,8 +236,14 @@ if (!customElements.get('curtain-configurator')) {
             throw new Error(result.description || result.message || 'Unable to add this item.');
           }
 
-          if (cart?.renderContents && result.sections) {
-            cart.renderContents(result);
+          const addedLine = result.items?.[0] || result;
+          if (cart?.renderContents && sections.length && sections.every((id) => typeof result.sections?.[id] === 'string')) {
+            try {
+              cart.classList.remove('is-empty');
+              cart.renderContents({ ...addedLine, sections: result.sections });
+            } catch (renderError) {
+              window.location.assign(window.routes?.cart_url || '/cart');
+            }
           } else {
             window.location.assign(window.routes?.cart_url || '/cart');
           }
@@ -253,12 +264,12 @@ if (!customElements.get('curtain-configurator')) {
       }
 
       setLoading(isLoading) {
+        this.isLoading = isLoading;
         if (!this.submitButton) return;
-        this.submitButton.disabled = isLoading;
+        this.submitButton.disabled = isLoading || Boolean(this.validate(this.getState()));
         this.submitButton.classList.toggle('loading', isLoading);
         this.spinner?.classList.toggle('hidden', !isLoading);
         this.submitButton.setAttribute('aria-busy', String(isLoading));
-        if (!isLoading) this.update();
       }
     }
   );

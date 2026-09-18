@@ -156,7 +156,8 @@
 }
 
 .curtain-configurator__message {
-  min-height: 4.4rem;
+  height: 8.4rem;
+  overflow: auto;
   padding: 1rem 1.2rem;
   border-left: 0.3rem solid rgb(var(--color-foreground));
   background: rgba(var(--color-foreground), 0.06);
@@ -165,7 +166,8 @@
 }
 
 .curtain-configurator__message[hidden] {
-  display: none;
+  display: block;
+  visibility: hidden;
 }
 
 .curtain-configurator__submit {
