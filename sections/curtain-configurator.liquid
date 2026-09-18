@@ -1,0 +1,398 @@
+{{ 'curtain-configurator.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'curtain-configurator.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign pricing_tiers = product.metafields.custom.curtain_pricing_tiers.value
+  assign drop_values = section.settings.drop_values | split: ','
+  assign selected_variant = product.selected_or_first_available_variant
+-%}
+
+<section
+  class="curtain-configurator-section color-{{ section.settings.color_scheme }} gradient"
+  style="--curtain-padding-top: {{ section.settings.padding_top }}px; --curtain-padding-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="page-width">
+    <curtain-configurator
+      class="curtain-configurator"
+      data-section-id="{{ section.id }}"
+      data-product-id="{{ product.id }}"
+      data-initial-variant-id="{{ selected_variant.id }}"
+      data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+      data-pricing-strategy="{{ section.settings.pricing_strategy }}"
+      data-enforce-price-match="{{ section.settings.enforce_price_match }}"
+      data-width-option-name="{{ section.settings.width_option_name | escape }}"
+      data-drop-option-name="{{ section.settings.drop_option_name | escape }}"
+      data-fabric-option-name="{{ section.settings.fabric_option_name | escape }}"
+      data-min-width="{{ section.settings.min_width }}"
+      data-max-width="{{ section.settings.max_width }}"
+    >
+      <div class="curtain-configurator__media">
+        {%- if product.featured_media != blank -%}
+          {{
+            product.featured_media.preview_image
+            | image_url: width: 1600
+            | image_tag:
+              class: 'curtain-configurator__image',
+              widths: '480, 720, 960, 1200, 1600',
+              sizes: '(min-width: 990px) 50vw, 100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: product.featured_media.alt
+          }}
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: 'curtain-configurator__image placeholder-svg' }}
+        {%- endif -%}
+      </div>
+
+      <div class="curtain-configurator__content">
+        {%- if section.settings.show_vendor and product.vendor != blank -%}
+          <p class="curtain-configurator__vendor caption-with-letter-spacing">{{ product.vendor }}</p>
+        {%- endif -%}
+
+        <h1 class="curtain-configurator__title {{ section.settings.heading_size }}">{{ product.title | escape }}</h1>
+
+        {%- if section.settings.intro != blank -%}
+          <div class="curtain-configurator__intro rte">{{ section.settings.intro }}</div>
+        {%- endif -%}
+
+        <div class="curtain-configurator__price-wrap" aria-live="polite" aria-atomic="true">
+          <span class="curtain-configurator__price-label">Your price</span>
+          <span class="curtain-configurator__price" data-curtain-price>
+            {{ selected_variant.price | money_with_currency }}
+          </span>
+        </div>
+
+        <form class="curtain-configurator__form" data-curtain-form novalidate>
+          <div class="curtain-configurator__field">
+            <label class="form__label" for="CurtainWidth-{{ section.id }}">Width (cm)</label>
+            <input
+              id="CurtainWidth-{{ section.id }}"
+              class="curtain-configurator__input field__input"
+              type="number"
+              name="width"
+              min="{{ section.settings.min_width }}"
+              max="{{ section.settings.max_width }}"
+              step="1"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="e.g. 180"
+              aria-describedby="CurtainWidthHelp-{{ section.id }} CurtainError-{{ section.id }}"
+              required
+              data-curtain-width
+            >
+            <p id="CurtainWidthHelp-{{ section.id }}" class="curtain-configurator__help">
+              Enter a whole number from {{ section.settings.min_width }} to {{ section.settings.max_width }} cm.
+            </p>
+          </div>
+
+          <div class="curtain-configurator__field">
+            <label class="form__label" for="CurtainDrop-{{ section.id }}">Drop (cm)</label>
+            <div class="select">
+              <select
+                id="CurtainDrop-{{ section.id }}"
+                class="select__select"
+                name="drop"
+                data-curtain-drop
+                required
+              >
+                {%- for raw_drop in drop_values -%}
+                  {%- assign drop = raw_drop | strip -%}
+                  {%- if drop != blank -%}
+                    <option value="{{ drop | escape }}">{{ drop | escape }} cm</option>
+                  {%- endif -%}
+                {%- endfor -%}
+              </select>
+              <span class="svg-wrapper">{{ 'icon-caret.svg' | inline_asset_content }}</span>
+            </div>
+          </div>
+
+          {%- if section.blocks.size > 0 -%}
+            <fieldset class="curtain-configurator__field curtain-configurator__fabric-field">
+              <legend class="form__label">
+                Fabric: <span data-curtain-fabric-label>{{ section.blocks.first.settings.label | escape }}</span>
+              </legend>
+              <div class="curtain-configurator__swatches">
+                {%- for block in section.blocks -%}
+                  {%- assign fabric_label = block.settings.label | default: block.settings.option_value -%}
+                  <label
+                    class="curtain-configurator__swatch{% if block.settings.image != blank %} curtain-configurator__swatch--image{% endif %}"
+                    title="{{ fabric_label | escape }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    <input
+                      type="radio"
+                      name="fabric"
+                      value="{{ block.settings.option_value | default: fabric_label | escape }}"
+                      data-label="{{ fabric_label | escape }}"
+                      data-curtain-fabric
+                      {% if forloop.first %}checked{% endif %}
+                    >
+                    <span
+                      class="curtain-configurator__swatch-visual"
+                      style="--swatch-color: {{ block.settings.color }};{% if block.settings.image != blank %} --swatch-image: url('{{ block.settings.image | image_url: width: 160 }}');{% endif %}"
+                      aria-hidden="true"
+                    ></span>
+                    <span class="visually-hidden">{{ fabric_label | escape }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endif -%}
+
+          <div
+            id="CurtainError-{{ section.id }}"
+            class="curtain-configurator__message"
+            role="alert"
+            aria-live="assertive"
+            data-curtain-error
+            hidden
+          ></div>
+
+          {%- if pricing_tiers == blank -%}
+            <div class="curtain-configurator__message" role="status">
+              This product is not configured with curtain pricing tiers yet.
+            </div>
+          {%- endif -%}
+
+          <button
+            class="curtain-configurator__submit button button--full-width"
+            type="submit"
+            data-curtain-submit
+            {% if pricing_tiers == blank or product.available == false %}disabled{% endif %}
+          >
+            <span data-curtain-submit-label>
+              {%- if product.available -%}
+                Enter measurements
+              {%- else -%}
+                Sold out
+              {%- endif -%}
+            </span>
+            {%- render 'loading-spinner' -%}
+          </button>
+
+          <p class="curtain-configurator__assurance">
+            Your measurements and fabric selection are saved with the order.
+          </p>
+        </form>
+      </div>
+
+      <script type="application/json" data-curtain-tiers>
+        [
+          {%- for tier in pricing_tiers -%}
+            {%- liquid
+              assign base_price_value = tier.base_price.value.amount | default: tier.base_price.value
+              assign drop_price_value = tier.price_per_drop_tier.value.amount | default: tier.price_per_drop_tier.value
+              assign base_price_cents = base_price_value | times: 100 | round
+              assign drop_price_cents = drop_price_value | times: 100 | round
+            -%}
+            {
+              "minWidth": {{ tier.min_width.value | json }},
+              "maxWidth": {{ tier.max_width.value | json }},
+              "panelsRequired": {{ tier.panels_required.value | json }},
+              "basePriceCents": {{ base_price_cents | json }},
+              "pricePerDropTierCents": {{ drop_price_cents | json }},
+              "optionValue": {{ tier.min_width.value | append: '-' | append: tier.max_width.value | append: 'cm' | json }}
+            }{% unless forloop.last %},{% endunless %}
+          {%- endfor -%}
+        ]
+      </script>
+
+      <script type="application/json" data-curtain-product>
+        {
+          "optionNames": {{ product.options | json }},
+          "variants": {{ product.variants | json }}
+        }
+      </script>
+    </curtain-configurator>
+
+    {%- if section.settings.show_description and product.description != blank -%}
+      <div class="curtain-configurator__description rte">{{ product.description }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Curtain configurator",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Connect product metafield custom.curtain_pricing_tiers to Curtain Pricing Tier metaobjects before using this section."
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Intro text",
+      "default": "<p>Enter your measurements and choose a fabric. Your made-to-measure price updates instantly.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show product description",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        { "value": "h2", "label": "Small" },
+        { "value": "h1", "label": "Medium" },
+        { "value": "h0", "label": "Large" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "header",
+      "content": "Measurements"
+    },
+    {
+      "type": "range",
+      "id": "min_width",
+      "min": 0,
+      "max": 500,
+      "step": 5,
+      "unit": "cm",
+      "label": "Minimum width",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 100,
+      "max": 600,
+      "step": 5,
+      "unit": "cm",
+      "label": "Maximum width",
+      "default": 360
+    },
+    {
+      "type": "text",
+      "id": "drop_values",
+      "label": "Drop values",
+      "info": "Comma-separated centimetre values",
+      "default": "150, 200, 250"
+    },
+    {
+      "type": "header",
+      "content": "Variant mapping"
+    },
+    {
+      "type": "select",
+      "id": "pricing_strategy",
+      "label": "Pricing strategy",
+      "options": [
+        { "value": "priced_variants", "label": "Priced variants (recommended)" },
+        { "value": "computed_preview", "label": "Computed preview (requires backend pricing)" }
+      ],
+      "default": "priced_variants",
+      "info": "Priced variants keeps the displayed and checkout prices identical without an app."
+    },
+    {
+      "type": "checkbox",
+      "id": "enforce_price_match",
+      "label": "Block cart when variant and calculated prices differ",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "width_option_name",
+      "label": "Hidden width-tier option name",
+      "default": "Width Tier"
+    },
+    {
+      "type": "text",
+      "id": "drop_option_name",
+      "label": "Drop option name",
+      "default": "Drop"
+    },
+    {
+      "type": "text",
+      "id": "fabric_option_name",
+      "label": "Fabric option name",
+      "default": "Fabric"
+    },
+    {
+      "type": "header",
+      "content": "Section style"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "fabric",
+      "name": "Fabric",
+      "limit": 12,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Customer-facing label",
+          "default": "Natural"
+        },
+        {
+          "type": "text",
+          "id": "option_value",
+          "label": "Product variant option value",
+          "info": "Must exactly match the Fabric option value on the product.",
+          "default": "Natural"
+        },
+        {
+          "type": "color",
+          "id": "color",
+          "label": "Swatch color",
+          "default": "#d8c8ad"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Swatch image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Curtain configurator",
+      "blocks": [
+        { "type": "fabric" },
+        { "type": "fabric" },
+        { "type": "fabric" }
+      ]
+    }
+  ]
+}
+{% endschema %}

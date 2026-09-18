@@ -1,0 +1,77 @@
+{
+  "sections": {
+    "main": {
+      "type": "curtain-configurator",
+      "blocks": {
+        "fabric_natural": {
+          "type": "fabric",
+          "settings": {
+            "label": "Natural Linen",
+            "option_value": "Natural Linen",
+            "color": "#d8c8ad"
+          }
+        },
+        "fabric_sage": {
+          "type": "fabric",
+          "settings": {
+            "label": "Soft Sage",
+            "option_value": "Soft Sage",
+            "color": "#9aa58d"
+          }
+        },
+        "fabric_charcoal": {
+          "type": "fabric",
+          "settings": {
+            "label": "Charcoal",
+            "option_value": "Charcoal",
+            "color": "#4a4d4b"
+          }
+        }
+      },
+      "block_order": [
+        "fabric_natural",
+        "fabric_sage",
+        "fabric_charcoal"
+      ],
+      "settings": {
+        "intro": "<p>Enter your measurements and choose a fabric. Your made-to-measure price updates instantly.</p>",
+        "show_vendor": false,
+        "show_description": true,
+        "heading_size": "h1",
+        "min_width": 50,
+        "max_width": 360,
+        "drop_values": "150, 200, 250",
+        "pricing_strategy": "priced_variants",
+        "enforce_price_match": true,
+        "width_option_name": "Width Tier",
+        "drop_option_name": "Drop",
+        "fabric_option_name": "Fabric",
+        "color_scheme": "scheme-1",
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related-products"
+  ]
+}

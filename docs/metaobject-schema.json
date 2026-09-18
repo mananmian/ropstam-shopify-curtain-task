@@ -1,0 +1,32 @@
+{
+  "metaobjectDefinition": {
+    "name": "Curtain Pricing Tier",
+    "type": "curtain_pricing_tier",
+    "storefrontsAccess": "PUBLIC_READ",
+    "fields": [
+      { "name": "Minimum width", "key": "min_width", "type": "number_integer", "required": true },
+      { "name": "Maximum width", "key": "max_width", "type": "number_integer", "required": true },
+      { "name": "Panels required", "key": "panels_required", "type": "number_integer", "required": true },
+      { "name": "Base price", "key": "base_price", "type": "money", "required": true },
+      {
+        "name": "Price per drop tier",
+        "key": "price_per_drop_tier",
+        "type": "money",
+        "required": true
+      }
+    ]
+  },
+  "productMetafieldDefinition": {
+    "name": "Curtain pricing tiers",
+    "namespace": "custom",
+    "key": "curtain_pricing_tiers",
+    "ownerType": "PRODUCT",
+    "type": "list.metaobject_reference",
+    "referenceType": "curtain_pricing_tier"
+  },
+  "sampleEntries": [
+    { "min_width": 50, "max_width": 120, "panels_required": 1, "base_price": 100, "price_per_drop_tier": 25 },
+    { "min_width": 121, "max_width": 240, "panels_required": 2, "base_price": 180, "price_per_drop_tier": 35 },
+    { "min_width": 241, "max_width": 360, "panels_required": 3, "base_price": 250, "price_per_drop_tier": 45 }
+  ]
+}
