@@ -17,8 +17,10 @@ Product: made-to-measure-linen-curtain
 - Ajax cart refreshes without a page reload and displays Width, Drop, Fabric without internal properties.
 - Cart drawer enabled and verified: 300cm / 250cm / Charcoal adds at PKR 340; combined with the prior PKR 215
   configuration, drawer total is PKR 555. Internal properties and option rows are hidden from the visible cart.
+- Shopify test order `#1003` verifies that the backend order line retains public Width / Drop / Fabric properties and
+  the private `_fabric_panels`, `_pricing_tier`, and `_calculated_price_cents` fulfillment properties.
 - Product uses a theme-provided curtain illustration until a real product photograph is uploaded.
 
-No new checkout order was placed during this verification pass. A test order and backend fulfillment-property audit,
-network-failure simulation, mobile viewport validation, and measured Lighthouse/CLS results must be recorded before
-claiming full production QA. The external-browser viewport override did not apply, so no mobile pass is claimed.
+Test checkout and backend fulfillment-property audit are complete. Network-failure simulation, mobile viewport
+validation, and measured Lighthouse/CLS results must still be recorded before claiming full production QA. The
+external-browser viewport override did not apply, so no mobile pass is claimed.
