@@ -52,7 +52,7 @@
               alt: product.featured_media.alt
           }}
         {%- else -%}
-          {{ 'product-1' | placeholder_svg_tag: 'curtain-configurator__image placeholder-svg' }}
+          <img src="{{ 'curtain-illustration.svg' | asset_url }}" class="curtain-configurator__image" width="800" height="1000" alt="Illustration of natural curtains framing a window" loading="eager">
         {%- endif -%}
       </div>
 

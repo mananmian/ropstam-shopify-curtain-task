@@ -14,7 +14,11 @@ Product: made-to-measure-linen-curtain
 - Live width boundary checks: 50, 120, 121, 240, 241, 360 select correct priced variants.
 - 49, 361, and 180.5 are rejected.
 - Width 180, drop 200, Soft Sage shows PKR 215 and adds successfully using Ajax.
-- Cart notification refreshes without page reload and displays Width, Drop, Fabric without internal properties.
+- Ajax cart refreshes without a page reload and displays Width, Drop, Fabric without internal properties.
+- Cart drawer enabled and verified: 300cm / 250cm / Charcoal adds at PKR 340; combined with the prior PKR 215
+  configuration, drawer total is PKR 555. Internal properties and option rows are hidden from the visible cart.
+- Product uses a theme-provided curtain illustration until a real product photograph is uploaded.
 
 No new checkout order was placed during this verification pass. A test order and backend fulfillment-property audit,
-network-failure simulation, and measured Lighthouse/CLS results must be recorded before claiming full production QA.
+network-failure simulation, mobile viewport validation, and measured Lighthouse/CLS results must be recorded before
+claiming full production QA. The external-browser viewport override did not apply, so no mobile pass is claimed.

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title">
+  <title id="title">Illustration of natural curtains framing a sunlit window</title>
+  <defs>
+    <linearGradient id="wall" x2="1" y2="1"><stop stop-color="#f4efe7"/><stop offset="1" stop-color="#e5ddd0"/></linearGradient>
+    <linearGradient id="linen"><stop stop-color="#c5b69d"/><stop offset=".28" stop-color="#e2d6c2"/><stop offset=".52" stop-color="#b8a78d"/><stop offset=".75" stop-color="#e6dac8"/><stop offset="1" stop-color="#b5a38a"/></linearGradient>
+    <linearGradient id="light" x2="0" y2="1"><stop stop-color="#d8e4e2"/><stop offset="1" stop-color="#f9f5ea"/></linearGradient>
+  </defs>
+  <path fill="url(#wall)" d="M0 0h800v1000H0z"/>
+  <path fill="#d6cbbb" d="M0 900h800v100H0z"/>
+  <path fill="#fbfaf6" d="M180 160h440v630H180z"/>
+  <path fill="url(#light)" d="M202 182h396v586H202z"/>
+  <path stroke="#fbfaf6" stroke-width="14" d="M400 182v586M202 475h396"/>
+  <path fill="#f8f5ed" d="M170 780h460v24H170z"/>
+  <path stroke="#4f4940" stroke-width="9" stroke-linecap="round" d="M118 136h564"/>
+  <path fill="url(#linen)" d="M130 146h165q-30 300-48 432t-24 284q-35 15-62 0t-45 3z"/>
+  <path fill="url(#linen)" d="M505 146h165l14 719q-22-13-45-3t-62 0q-6-150-24-284t-48-432"/>
+  <g fill="none" stroke="#927f65" stroke-width="2" opacity=".35"><path d="M150 150l-10 704M181 150l-8 701M217 150l-15 710M254 150l-35 704M540 150l45 710M579 150l23 710M617 150l9 704M650 150l13 704"/></g>
+  <ellipse fill="#baa990" opacity=".25" cx="400" cy="935" rx="220" ry="22"/>
+  <text x="400" y="963" text-anchor="middle" fill="#726653" font-family="sans-serif" font-size="15" letter-spacing="4">MADE TO YOUR MEASUREMENTS</text>
+</svg>
