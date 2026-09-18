@@ -32,6 +32,10 @@ Create **Curtain Pricing Tier** with type `curtain_pricing_tier` and these field
 
 Enable storefront access for the definition. Create at least these three entries:
 
+The connected demonstration store uses the automatically generated keys `minimum_width` and `maximum_width`.
+The section supports these existing keys as well as the brief's `min_width` and `max_width` keys.
+Money fields are already in minor units when rendered in Liquid; only Decimal fields are multiplied by 100.
+
 | Minimum | Maximum | Panels | Example base | Example drop increment |
 | ---: | ---: | ---: | ---: | ---: |
 | 50 | 120 | 1 | 100.00 | 25.00 |
@@ -87,8 +91,8 @@ caused by an incorrectly priced variant.
 
 ### Alternative: Cart Transform Function
 
-The section also has a `Computed preview` mode for integration with a backend pricing implementation. Do not use that
-mode by itself in production: it previews the calculation but `/cart/add.js` still charges the selected variant price.
+The section retains a `Computed preview` setting for a future backend pricing implementation. Purchasing is deliberately
+disabled in that mode; no backend pricing Function is included in this theme.
 A Shopify Cart Transform Function using a `lineUpdate` operation can make the calculated price authoritative. That
 approach requires a custom app and is supported for line updates on development stores and Shopify Plus stores.
 
@@ -148,6 +152,22 @@ Run the cases in `docs/TESTING.md`, place a test order, and add an Admin screens
 - Product assigned to `product.curtain`
 - Complete boundary, cart, mobile, and keyboard testing
 - Test order proving private manufacturing properties reach Shopify Admin
+
+## Development-store setup
+
+- Product: `made-to-measure-linen-curtain` (27 priced variants; demonstration prices in PKR).
+- Product Admin ID: `8058924367958`.
+- Store: `repstamsolution-wy8pyzu9.myshopify.com`.
+- Theme: `152192286806`, connected to this repository's `main` branch.
+- Existing pricing Metaobjects are attached in ascending width order.
+- Inventory tracking is disabled for this made-to-order demonstration.
+- Live storefront verification is recorded in `docs/LIVE-VERIFICATION.md`.
+
+Known limits: pricing follows the documented drop-index assumption rather than an arbitrary formula stored in Admin.
+Updating a Metaobject price also requires updating the matching variant prices; mismatches block purchasing by default.
+Internal width-tier variant titles may still be shown by Shopify checkout and order notifications; theme filtering applies
+only to the storefront cart. Fulfillment properties are client supplied, so backend verification is still needed for
+tamper-resistant manufacturing workflows. This is a theme-based demonstration, not a completed backend validation app.
 
 ## Theme base
 
