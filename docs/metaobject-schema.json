@@ -4,8 +4,8 @@
     "type": "curtain_pricing_tier",
     "storefrontsAccess": "PUBLIC_READ",
     "fields": [
-      { "name": "Minimum width", "key": "min_width", "type": "number_integer", "required": true },
-      { "name": "Maximum width", "key": "max_width", "type": "number_integer", "required": true },
+      { "name": "Minimum width", "key": "minimum_width", "type": "number_integer", "required": true },
+      { "name": "Maximum width", "key": "maximum_width", "type": "number_integer", "required": true },
       { "name": "Panels required", "key": "panels_required", "type": "number_integer", "required": true },
       { "name": "Base price", "key": "base_price", "type": "money", "required": true },
       {
@@ -25,8 +25,8 @@
     "referenceType": "curtain_pricing_tier"
   },
   "sampleEntries": [
-    { "min_width": 50, "max_width": 120, "panels_required": 1, "base_price": 100, "price_per_drop_tier": 25 },
-    { "min_width": 121, "max_width": 240, "panels_required": 2, "base_price": 180, "price_per_drop_tier": 35 },
-    { "min_width": 241, "max_width": 360, "panels_required": 3, "base_price": 250, "price_per_drop_tier": 45 }
+    { "minimum_width": 50, "maximum_width": 120, "panels_required": 1, "base_price": 100, "price_per_drop_tier": 25 },
+    { "minimum_width": 121, "maximum_width": 240, "panels_required": 2, "base_price": 180, "price_per_drop_tier": 35 },
+    { "minimum_width": 241, "maximum_width": 360, "panels_required": 3, "base_price": 250, "price_per_drop_tier": 45 }
   ]
 }

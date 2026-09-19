@@ -32,8 +32,14 @@ Create **Curtain Pricing Tier** with type `curtain_pricing_tier` and these field
 
 Enable storefront access for the definition. Create at least these three entries:
 
-The connected demonstration store uses the automatically generated keys `minimum_width` and `maximum_width`.
-The section supports these existing keys as well as the brief's `min_width` and `max_width` keys.
+### Note on metaobject field keys
+
+The brief specifies the field keys as `min_width` and `max_width`. When the connected demonstration store's fields
+were created from the display names **Minimum width** and **Maximum width**, Shopify generated the immutable keys
+`minimum_width` and `maximum_width`. The Liquid serialization layer resolves both naming conventions, so the pricing
+logic works with either the brief's keys or the connected store's Admin-generated keys. The table above preserves the
+brief's requested schema; `docs/metaobject-schema.json` records the connected store's actual schema.
+
 Money fields are already in minor units when rendered in Liquid; only Decimal fields are multiplied by 100.
 
 | Minimum | Maximum | Panels | Example base | Example drop increment |
